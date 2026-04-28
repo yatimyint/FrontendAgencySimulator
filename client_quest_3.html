@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Quest #3: Travel Team Gallery</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: #f1f5f9; }
+        
+        /* Top Half: Preview */
+        #preview-container { flex: 1; background: #fff; position: relative; border-bottom: 3px solid #cbd5e1; overflow: auto; min-height: 40vh; }
+        
+        /* Bottom Half: Dual Editor */
+        #editor-container { height: 55%; display: flex; background: #1e293b; }
+        
+        .panel { flex: 1; display: flex; flex-direction: column; padding: 10px; border-right: 1px solid #334155; }
+        .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        
+        textarea { flex: 1; background: #0f172a; color: #a5f3fc; border: 1px solid #334155; padding: 10px; font-family: 'Consolas', monospace; font-size: 13px; resize: none; outline: none; border-radius: 4px; line-height: 1.4; }
+        
+        #run-btn { position: absolute; bottom: 20px; right: 20px; background: #22d3ee; color: #083344; padding: 12px 24px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; z-index: 100; }
+        #next-btn { position: absolute; bottom: 20px; right: 180px; background: #f59e0b; color: white; padding: 12px 24px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; display: none; z-index: 100; }
+
+        #quest-icon { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; background: #ffca28; color: #333; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 4px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); z-index: 200; width: 400px; color: #333; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 150; }
+        
+        #status-area { position: absolute; bottom: 85px; right: 20px; text-align: right; pointer-events: none; }
+        #success-msg { display: none; color: #4ade80; font-weight: bold; background: #0f172a; padding: 8px; border-radius: 4px; border: 1px solid #4ade80; }
+    </style>
+</head>
+<body>
+
+    <div id="quest-icon" onclick="toggleModal()">❓</div>
+
+    <div id="preview-container">
+        <div id="preview-frame">
+            <div id="html-render" style="padding:40px;">
+                </div>
+            <style id="style-render">
+                /* CSS will render here */
+            </style>
+        </div>
+    </div>
+
+    <div id="editor-container">
+        <div class="panel">
+            <div class="panel-header">gallery.html</div>
+            <textarea id="html-input" placeholder="Create a div with class 'team-gallery'..."></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">gallery.css</div>
+            <textarea id="css-input" placeholder="Use display: flex and justify-content..."></textarea>
+        </div>
+    </div>
+
+    <button id="run-btn" onclick="runCode()">DEPLOY GALLERY</button>
+    <button id="next-btn" onclick="window.location.href='client_quest_4.html'">NEXT CONTRACT ➔</button>
+
+    <div id="status-area">
+        <span id="success-msg">🌍 GALLERY LIVE! The team looks amazing.</span>
+    </div>
+
+    <div id="overlay" onclick="toggleModal()"></div>
+    <div id="modal">
+        <h3 style="margin-top:0; color:#0369a1;">Client Email: "Explore Travel"</h3>
+        <p>Our team page is a mess! Can you help us align our 3 guides?</p>
+        <ul style="font-size: 13px;">
+            <li><strong>HTML:</strong> Create a parent <code>&lt;div&gt;</code> with class <code>team-gallery</code>.</li>
+            <li><strong>HTML:</strong> Inside, add 3 <code>&lt;div&gt;</code> items with class <code>team-card</code>.</li>
+            <li><strong>HTML:</strong> Put an <code>&lt;img&gt;</code> inside each card (use any URL).</li>
+            <li><strong>CSS:</strong> Set <code>.team-gallery</code> to <code>display: flex</code> and <code>justify-content: space-between</code>.</li>
+            <li><strong>CSS:</strong> Set <code>.team-card img</code> to <code>width: 100px</code> and <code>border-radius: 50%</code>.</li>
+        </ul>
+        <button onclick="toggleModal()" style="width:100%; padding:10px; margin-top:15px; cursor:pointer; background:#0369a1; color:white; border-radius:4px; border:none;">Mission Accepted!</button>
+    </div>
+
+    <script>
+        function toggleModal() {
+            const m = document.getElementById('modal');
+            const o = document.getElementById('overlay');
+            const vis = m.style.display === 'block';
+            m.style.display = vis ? 'none' : 'block';
+            o.style.display = vis ? 'none' : 'block';
+        }
+
+        function runCode() {
+            const html = document.getElementById('html-input').value;
+            const css = document.getElementById('css-input').value;
+            
+            document.getElementById('html-render').innerHTML = html;
+            document.getElementById('style-render').innerHTML = css;
+
+            // Verification Logic
+            const hasGallery = html.includes('class="team-gallery"');
+            const cardCount = (html.match(/class="team-card"/g) || []).length;
+            const hasImgs = (html.match(/<img/g) || []).length >= 3;
+            
+            const isFlex = css.includes('display: flex') && css.includes('justify-content: space-between');
+            const isCircle = css.includes('border-radius: 50%') || css.includes('50%');
+
+            if (hasGallery && cardCount >= 3 && hasImgs && isFlex && isCircle) {
+                document.getElementById('success-msg').style.display = 'block';
+                document.getElementById('next-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('success-msg').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

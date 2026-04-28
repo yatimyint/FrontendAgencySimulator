@@ -2,39 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Client Quest #2: Cyber-Startup Launch</title>
     <style>
         body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: #0f172a; }
         
-        /* Top Half: The Website Preview */
-        #preview-container { flex: 1; background: #fff; position: relative; border-bottom: 3px solid #334155; overflow: auto; min-height: 40vh; }
-        
-        /* Bottom Half: Dual Editor */
-        #editor-container { height: 50%; display: flex; background: #1e293b; border-top: 1px solid #334155; }
-        
+        #preview-container { 
+            flex: 1; 
+            background: #fff; 
+            position: relative; 
+            border-bottom: 3px solid #334155; 
+            overflow: auto; 
+            min-height: 35vh; 
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        #editor-container { flex: 1; display: flex; background: #1e293b; border-top: 1px solid #334155; }
         .panel { flex: 1; display: flex; flex-direction: column; padding: 10px; border-right: 1px solid #334155; }
-        .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
+        .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         
-        textarea { flex: 1; background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 10px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; resize: none; outline: none; border-radius: 4px; line-height: 1.4; }
-        #html-input { color: #fbbf24; }
+        textarea { 
+            flex: 1; 
+            background: #0f172a; 
+            color: #38bdf8; 
+            border: 1px solid #334155; 
+            padding: 10px; 
+            font-family: 'Consolas', monospace; 
+            font-size: 16px; 
+            resize: none; 
+            outline: none; 
+            border-radius: 4px; 
+            line-height: 1.4;
+        }
         
-        .controls { position: absolute; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; z-index: 100; }
-        button { padding: 12px 24px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); transition: transform 0.1s; }
-        button:active { transform: scale(0.98); }
-        
+        .controls { position: absolute; bottom: 10px; right: 10px; display: flex; align-items: center; gap: 10px; z-index: 100; }
+        button { padding: 12px 20px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
         #run-btn { background: #38bdf8; color: #0f172a; }
         #next-btn { background: #f59e0b; color: white; display: none; }
-
-        #quest-icon { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; background: #ffca28; color: #333; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 4px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        #quest-icon { position: absolute; top: 15px; right: 15px; font-size: 20px; cursor: pointer; background: #ffca28; color: #333; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 4px; font-weight: bold; }
         
-        /* Modal for Client Email */
-        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; width: 380px; color: #333; }
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; width: 320px; color: #333; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 150; }
-        
-        #status-area { position: absolute; bottom: 80px; right: 20px; text-align: right; pointer-events: none; }
-        #success-msg { display: none; color: #4ade80; font-weight: bold; background: rgba(15, 23, 42, 0.9); padding: 10px; border-radius: 4px; border: 1px solid #4ade80; }
-        #error-msg { display: none; color: #f87171; background: rgba(15, 23, 42, 0.9); padding: 10px; border-radius: 4px; font-size: 13px; border: 1px solid #f87171; }
+        #status-area { position: absolute; bottom: 70px; right: 10px; text-align: right; pointer-events: none; }
+        #success-msg { display: none; color: #4ade80; font-weight: bold; background: rgba(15, 23, 42, 0.9); padding: 8px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -42,51 +52,41 @@
     <div id="quest-icon" onclick="toggleModal()">❓</div>
 
     <div id="preview-container">
-        <div id="preview-frame">
-            <div id="html-render">
-                <div style="padding: 50px; text-align: center; color: #ccc;">
-                    Your website preview will appear here once you "Deploy Code".
-                </div>
-            </div>
-            <style id="style-render">
-                /* User CSS will appear here */
-            </style>
-        </div>
+        <div id="html-render"></div>
+        <style id="style-render"></style>
     </div>
 
     <div id="editor-container">
         <div class="panel">
             <div class="panel-header">index.html</div>
-            <textarea id="html-input" placeholder="Example: <div class='box'></div>"></textarea>
+            <textarea id="html-input" spellcheck="false" autocomplete="off" placeholder="<div class='hero-box'>..."></textarea>
         </div>
         <div class="panel">
             <div class="panel-header">styles.css</div>
-            <textarea id="css-input" placeholder="Example: .box { background: red; }">/* Style the hero-box and button here */</textarea>
+            <textarea id="css-input" spellcheck="false" autocomplete="off" placeholder=".hero-box { ... }"></textarea>
         </div>
     </div>
 
     <div class="controls">
         <button id="run-btn" onclick="runCode()">DEPLOY CODE</button>
-        <button id="next-btn" onclick="goToQuest3()">NEXT CONTRACT ➔</button>
+        <button id="next-btn" onclick="window.location.href='client_quest_3.html'">NEXT CONTRACT ➔</button>
     </div>
 
     <div id="status-area">
-        <span id="success-msg">🚀 STARTUP LAUNCHED! Dark Mode activated.</span>
-        <span id="error-msg">Deployment failed. Check the requirements in the email.</span>
+        <span id="success-msg">🚀 STARTUP LAUNCHED!</span>
     </div>
 
     <div id="overlay" onclick="toggleModal()"></div>
     <div id="modal">
-        <h3 style="margin-top:0; color:#1e293b; border-bottom: 2px solid #38bdf8; padding-bottom: 10px;">Urgent Request: "Cyber-Startup"</h3>
-        <p>Our current page is just a blank white screen. We need a modern "Dark Mode" hero section ASAP!</p>
-        <ul style="font-size: 13px; line-height: 1.6;">
-            <li><strong>HTML:</strong> Create a <code>&lt;div&gt;</code> with the class <code>hero-box</code>.</li>
-            <li><strong>HTML:</strong> Inside that div, add a <code>&lt;button&gt;</code> that says "Join Waitlist".</li>
-            <li><strong>CSS:</strong> Set <code>.hero-box</code> background to <strong>#0f172a</strong> (Navy Dark).</li>
-            <li><strong>CSS:</strong> Set <code>.hero-box</code> height to <strong>300px</strong>.</li>
-            <li><strong>CSS:</strong> Make the button background <strong>#38bdf8</strong> and set <strong>border: none;</strong>.</li>
+        <h3>Cyber-Startup Mission</h3>
+        <p>Listen up! The div must look like a box.</p>
+        <ul style="font-size: 13px; line-height: 1.5;">
+            <li><strong>HTML:</strong> &lt;div class="hero-box"&gt;</li>
+            <li><strong>HTML:</strong> &lt;button&gt;Join Waitlist&lt;/button&gt;</li>
+            <li><strong>CSS:</strong> .hero-box background: #0f172a</li>
+            <li><strong>CSS:</strong> .hero-box height: 300px</li>
         </ul>
-        <button onclick="toggleModal()" style="width:100%; padding:12px; margin-top:15px; cursor:pointer; background:#0f172a; color:white; border-radius:4px; border:none;">Accept Mission</button>
+        <button onclick="toggleModal()" style="width:100%; padding:10px; margin-top:10px;">Got it!</button>
     </div>
 
     <script>
@@ -99,35 +99,27 @@
         }
 
         function runCode() {
-            const html = document.getElementById('html-input').value;
-            const css = document.getElementById('css-input').value;
+            const htmlValue = document.getElementById('html-input').value;
+            const cssValue = document.getElementById('css-input').value;
             
-            document.getElementById('html-render').innerHTML = html;
-            document.getElementById('style-render').innerHTML = css;
+            const htmlRender = document.getElementById('html-render');
+            const styleRender = document.getElementById('style-render');
 
-            // Logic to check if the student followed all client instructions
-            const hasHeroDiv = html.includes('class="hero-box"') || html.includes("class='hero-box'");
-            const hasButton = html.toLowerCase().includes('<button') && html.includes('Join Waitlist');
+            // IPAD FIX: We need to clear the content first, then inject
+            htmlRender.innerHTML = ""; 
+            htmlRender.innerHTML = htmlValue;
             
-            const hasDarkBg = css.includes('#0f172a');
-            const hasHeight = css.includes('300px');
-            const hasBlueBtn = css.includes('#38bdf8');
-            const noBorder = css.includes('border: none') || css.includes('border:none');
+            // IPAD CSS FIX: Forces Safari to re-apply styles
+            styleRender.textContent = cssValue;
 
-            if (hasHeroDiv && hasButton && hasDarkBg && hasHeight && hasBlueBtn && noBorder) {
+            // Simple validation
+            if (htmlValue.includes('hero-box') && cssValue.includes('#0f172a') && cssValue.includes('300px')) {
                 document.getElementById('success-msg').style.display = 'block';
-                document.getElementById('error-msg').style.display = 'none';
                 document.getElementById('next-btn').style.display = 'inline-block';
             } else {
                 document.getElementById('success-msg').style.display = 'none';
-                document.getElementById('error-msg').style.display = 'block';
                 document.getElementById('next-btn').style.display = 'none';
             }
-        }
-
-        function goToQuest3() {
-            // This links to the next file in your project folder
-            window.location.href = "client_quest_3.html";
         }
     </script>
 </body>

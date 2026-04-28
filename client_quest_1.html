@@ -67,7 +67,7 @@
                 <span id="error-msg">The client isn't happy yet. Check the requirements!</span>
             </div>
             <button id="run-btn" onclick="runCode()">RUN CODE</button>
-            <button id="next-btn" onclick="alert('Stage 2 Coming Soon!')">NEXT CONTRACT</button>
+            <button id="next-btn" onclick="goToQuest2()">NEXT CONTRACT</button>
         </div>
     </div>
 
@@ -109,7 +109,13 @@
             } else {
                 document.getElementById('success-msg').style.display = 'none';
                 document.getElementById('error-msg').style.display = 'block';
+                document.getElementById('next-btn').style.display = 'none';
             }
+        }
+
+        function goToQuest2() {
+            // This will now successfully load the dual-panel editor stage
+            window.location.href = "client_quest_2.html";
         }
     </script>
 </body>

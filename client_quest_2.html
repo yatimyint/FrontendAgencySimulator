@@ -17,7 +17,7 @@
         .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
         
         textarea { flex: 1; background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 10px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; resize: none; outline: none; border-radius: 4px; line-height: 1.4; }
-        #html-input { color: #fbbf24; } /* HTML color coding for fun */
+        #html-input { color: #fbbf24; }
         
         .controls { position: absolute; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; z-index: 100; }
         button { padding: 12px 24px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); transition: transform 0.1s; }
@@ -61,18 +61,18 @@
         </div>
         <div class="panel">
             <div class="panel-header">styles.css</div>
-            <textarea id="css-input" placeholder="Example: .box { background: red; }">/* Start styling the Cyber-Startup page... */</textarea>
+            <textarea id="css-input" placeholder="Example: .box { background: red; }">/* Style the hero-box and button here */</textarea>
         </div>
     </div>
 
     <div class="controls">
         <button id="run-btn" onclick="runCode()">DEPLOY CODE</button>
-        <button id="next-btn" onclick="alert('Mission Complete! You have finished all active agency contracts!')">FINISH CAREER 🏁</button>
+        <button id="next-btn" onclick="goToQuest3()">NEXT CONTRACT ➔</button>
     </div>
 
     <div id="status-area">
-        <span id="success-msg">🚀 STARTUP LAUNCHED! Client is thrilled with the Dark Mode.</span>
-        <span id="error-msg">Deployment failed. The HTML or CSS doesn't match the client's email.</span>
+        <span id="success-msg">🚀 STARTUP LAUNCHED! Dark Mode activated.</span>
+        <span id="error-msg">Deployment failed. Check the requirements in the email.</span>
     </div>
 
     <div id="overlay" onclick="toggleModal()"></div>
@@ -81,10 +81,10 @@
         <p>Our current page is just a blank white screen. We need a modern "Dark Mode" hero section ASAP!</p>
         <ul style="font-size: 13px; line-height: 1.6;">
             <li><strong>HTML:</strong> Create a <code>&lt;div&gt;</code> with the class <code>hero-box</code>.</li>
-            <li><strong>HTML:</strong> Inside the div, add a <code>&lt;button&gt;</code> that says "Join Waitlist".</li>
+            <li><strong>HTML:</strong> Inside that div, add a <code>&lt;button&gt;</code> that says "Join Waitlist".</li>
             <li><strong>CSS:</strong> Set <code>.hero-box</code> background to <strong>#0f172a</strong> (Navy Dark).</li>
             <li><strong>CSS:</strong> Set <code>.hero-box</code> height to <strong>300px</strong>.</li>
-            <li><strong>CSS:</strong> Make the button background <strong>#38bdf8</strong> and remove its border.</li>
+            <li><strong>CSS:</strong> Make the button background <strong>#38bdf8</strong> and set <strong>border: none;</strong>.</li>
         </ul>
         <button onclick="toggleModal()" style="width:100%; padding:12px; margin-top:15px; cursor:pointer; background:#0f172a; color:white; border-radius:4px; border:none;">Accept Mission</button>
     </div>
@@ -105,7 +105,7 @@
             document.getElementById('html-render').innerHTML = html;
             document.getElementById('style-render').innerHTML = css;
 
-            // Verification: Logic checks both HTML and CSS
+            // Logic to check if the student followed all client instructions
             const hasHeroDiv = html.includes('class="hero-box"') || html.includes("class='hero-box'");
             const hasButton = html.toLowerCase().includes('<button') && html.includes('Join Waitlist');
             
@@ -121,7 +121,13 @@
             } else {
                 document.getElementById('success-msg').style.display = 'none';
                 document.getElementById('error-msg').style.display = 'block';
+                document.getElementById('next-btn').style.display = 'none';
             }
+        }
+
+        function goToQuest3() {
+            // This links to the next file in your project folder
+            window.location.href = "client_quest_3.html";
         }
     </script>
 </body>

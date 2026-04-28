@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Quest #2: Cyber-Startup Launch</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: #0f172a; }
+        
+        /* Top Half: The Website Preview */
+        #preview-container { flex: 1; background: #fff; position: relative; border-bottom: 3px solid #334155; overflow: auto; min-height: 40vh; }
+        
+        /* Bottom Half: Dual Editor */
+        #editor-container { height: 50%; display: flex; background: #1e293b; border-top: 1px solid #334155; }
+        
+        .panel { flex: 1; display: flex; flex-direction: column; padding: 10px; border-right: 1px solid #334155; }
+        .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
+        
+        textarea { flex: 1; background: #0f172a; color: #38bdf8; border: 1px solid #334155; padding: 10px; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; resize: none; outline: none; border-radius: 4px; line-height: 1.4; }
+        #html-input { color: #fbbf24; } /* HTML color coding for fun */
+        
+        .controls { position: absolute; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 10px; z-index: 100; }
+        button { padding: 12px 24px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); transition: transform 0.1s; }
+        button:active { transform: scale(0.98); }
+        
+        #run-btn { background: #38bdf8; color: #0f172a; }
+        #next-btn { background: #f59e0b; color: white; display: none; }
+
+        #quest-icon { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; background: #ffca28; color: #333; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 4px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        
+        /* Modal for Client Email */
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; width: 380px; color: #333; }
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 150; }
+        
+        #status-area { position: absolute; bottom: 80px; right: 20px; text-align: right; pointer-events: none; }
+        #success-msg { display: none; color: #4ade80; font-weight: bold; background: rgba(15, 23, 42, 0.9); padding: 10px; border-radius: 4px; border: 1px solid #4ade80; }
+        #error-msg { display: none; color: #f87171; background: rgba(15, 23, 42, 0.9); padding: 10px; border-radius: 4px; font-size: 13px; border: 1px solid #f87171; }
+    </style>
+</head>
+<body>
+
+    <div id="quest-icon" onclick="toggleModal()">❓</div>
+
+    <div id="preview-container">
+        <div id="preview-frame">
+            <div id="html-render">
+                <div style="padding: 50px; text-align: center; color: #ccc;">
+                    Your website preview will appear here once you "Deploy Code".
+                </div>
+            </div>
+            <style id="style-render">
+                /* User CSS will appear here */
+            </style>
+        </div>
+    </div>
+
+    <div id="editor-container">
+        <div class="panel">
+            <div class="panel-header">index.html</div>
+            <textarea id="html-input" placeholder="Example: <div class='box'></div>"></textarea>
+        </div>
+        <div class="panel">
+            <div class="panel-header">styles.css</div>
+            <textarea id="css-input" placeholder="Example: .box { background: red; }">/* Start styling the Cyber-Startup page... */</textarea>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="run-btn" onclick="runCode()">DEPLOY CODE</button>
+        <button id="next-btn" onclick="alert('Mission Complete! You have finished all active agency contracts!')">FINISH CAREER 🏁</button>
+    </div>
+
+    <div id="status-area">
+        <span id="success-msg">🚀 STARTUP LAUNCHED! Client is thrilled with the Dark Mode.</span>
+        <span id="error-msg">Deployment failed. The HTML or CSS doesn't match the client's email.</span>
+    </div>
+
+    <div id="overlay" onclick="toggleModal()"></div>
+    <div id="modal">
+        <h3 style="margin-top:0; color:#1e293b; border-bottom: 2px solid #38bdf8; padding-bottom: 10px;">Urgent Request: "Cyber-Startup"</h3>
+        <p>Our current page is just a blank white screen. We need a modern "Dark Mode" hero section ASAP!</p>
+        <ul style="font-size: 13px; line-height: 1.6;">
+            <li><strong>HTML:</strong> Create a <code>&lt;div&gt;</code> with the class <code>hero-box</code>.</li>
+            <li><strong>HTML:</strong> Inside the div, add a <code>&lt;button&gt;</code> that says "Join Waitlist".</li>
+            <li><strong>CSS:</strong> Set <code>.hero-box</code> background to <strong>#0f172a</strong> (Navy Dark).</li>
+            <li><strong>CSS:</strong> Set <code>.hero-box</code> height to <strong>300px</strong>.</li>
+            <li><strong>CSS:</strong> Make the button background <strong>#38bdf8</strong> and remove its border.</li>
+        </ul>
+        <button onclick="toggleModal()" style="width:100%; padding:12px; margin-top:15px; cursor:pointer; background:#0f172a; color:white; border-radius:4px; border:none;">Accept Mission</button>
+    </div>
+
+    <script>
+        function toggleModal() {
+            const m = document.getElementById('modal');
+            const o = document.getElementById('overlay');
+            const vis = m.style.display === 'block';
+            m.style.display = vis ? 'none' : 'block';
+            o.style.display = vis ? 'none' : 'block';
+        }
+
+        function runCode() {
+            const html = document.getElementById('html-input').value;
+            const css = document.getElementById('css-input').value;
+            
+            document.getElementById('html-render').innerHTML = html;
+            document.getElementById('style-render').innerHTML = css;
+
+            // Verification: Logic checks both HTML and CSS
+            const hasHeroDiv = html.includes('class="hero-box"') || html.includes("class='hero-box'");
+            const hasButton = html.toLowerCase().includes('<button') && html.includes('Join Waitlist');
+            
+            const hasDarkBg = css.includes('#0f172a');
+            const hasHeight = css.includes('300px');
+            const hasBlueBtn = css.includes('#38bdf8');
+            const noBorder = css.includes('border: none') || css.includes('border:none');
+
+            if (hasHeroDiv && hasButton && hasDarkBg && hasHeight && hasBlueBtn && noBorder) {
+                document.getElementById('success-msg').style.display = 'block';
+                document.getElementById('error-msg').style.display = 'none';
+                document.getElementById('next-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('success-msg').style.display = 'none';
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

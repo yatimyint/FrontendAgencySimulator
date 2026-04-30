@@ -5,53 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Client Quest #2: Cyber-Startup Launch</title>
     <style>
+        /* UI Layout */
         body { margin: 0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: #0f172a; }
         
         #preview-container { 
             flex: 1; 
-            background: #fff; 
+            background: #f8fafc; 
             position: relative; 
             border-bottom: 3px solid #334155; 
             overflow: auto; 
-            min-height: 35vh; 
-            -webkit-overflow-scrolling: touch; 
+            min-height: 40vh; 
         }
 
-        #editor-container { flex: 1; display: flex; background: #1e293b; border-top: 1px solid #334155; }
+        #editor-container { flex: 1; display: flex; background: #1e293b; }
         .panel { flex: 1; display: flex; flex-direction: column; padding: 10px; border-right: 1px solid #334155; }
-        .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        .panel-header { color: #94a3b8; font-size: 11px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
         
         textarea { 
             flex: 1; 
             background: #0f172a; 
             color: #38bdf8; 
             border: 1px solid #334155; 
-            padding: 10px; 
-            font-family: 'Consolas', monospace; 
-            font-size: 16px; 
+            padding: 12px; 
+            font-family: 'Consolas', 'Monaco', monospace; 
+            font-size: 14px; 
             resize: none; 
             outline: none; 
             border-radius: 4px; 
-            line-height: 1.4;
+            line-height: 1.5;
         }
         
-        .controls { position: absolute; bottom: 10px; right: 10px; display: flex; align-items: center; gap: 10px; z-index: 100; }
-        button { padding: 12px 20px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
+        /* Controls & Feedback */
+        .controls { position: absolute; bottom: 20px; right: 20px; display: flex; align-items: center; gap: 12px; z-index: 100; }
+        button { padding: 12px 24px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; font-size: 14px; transition: 0.2s; }
         #run-btn { background: #38bdf8; color: #0f172a; }
-        #next-btn { background: #f59e0b; color: white; display: none; }
-        #quest-icon { position: absolute; top: 15px; right: 15px; font-size: 20px; cursor: pointer; background: #ffca28; color: #333; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 4px; font-weight: bold; }
+        #run-btn:hover { background: #7dd3fc; }
+        #next-btn { background: #f59e0b; color: white; display: none; animation: slideIn 0.3s ease-out; }
         
-        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 200; width: 320px; color: #333; }
+        #quest-icon { position: absolute; top: 15px; right: 15px; font-size: 20px; cursor: pointer; background: #ffca28; color: #333; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 100; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        
+        #status-area { position: absolute; bottom: 80px; right: 20px; text-align: right; pointer-events: none; }
+        #success-msg { display: none; color: #4ade80; font-weight: bold; background: rgba(15, 23, 42, 0.95); padding: 10px 15px; border-radius: 6px; border: 1px solid #4ade80; }
+
+        /* Modal */
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 200; width: 85%; max-width: 350px; color: #333; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 150; }
-        #status-area { position: absolute; bottom: 70px; right: 10px; text-align: right; pointer-events: none; }
-        #success-msg { display: none; color: #4ade80; font-weight: bold; background: rgba(15, 23, 42, 0.9); padding: 8px; border-radius: 4px; }
+
+        @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="quest-icon" onclick="toggleModal()">❓</div>
+    <div id="quest-icon" onclick="toggleModal()">?</div>
 
     <div id="preview-container">
+        <!-- Where the user code lives -->
         <div id="html-render"></div>
         <style id="style-render"></style>
     </div>
@@ -59,43 +67,43 @@
     <div id="editor-container">
         <div class="panel">
             <div class="panel-header">index.html</div>
-            <textarea id="html-input" spellcheck="false" autocomplete="off" placeholder="<div class='hero-box'>..."></textarea>
+            <textarea id="html-input" spellcheck="false" placeholder='<div class="hero-box">...'></textarea>
         </div>
         <div class="panel">
             <div class="panel-header">styles.css</div>
-            <textarea id="css-input" spellcheck="false" autocomplete="off" placeholder=".hero-box { ... }"></textarea>
+            <textarea id="css-input" spellcheck="false" placeholder=".hero-box { ... }"></textarea>
         </div>
+    </div>
+
+    <div id="status-area">
+        <span id="success-msg">🚀 STARTUP DEPLOYED SUCCESSFULLY!</span>
     </div>
 
     <div class="controls">
         <button id="run-btn" onclick="runCode()">DEPLOY CODE</button>
-        <button id="next-btn" onclick="window.location.href='client_quest_3.html'">NEXT CONTRACT ➔</button>
-    </div>
-
-    <div id="status-area">
-        <span id="success-msg">🚀 STARTUP LAUNCHED!</span>
+        <button id="next-btn" onclick="alert('Moving to Quest #3...')">NEXT CONTRACT ➔</button>
     </div>
 
     <div id="overlay" onclick="toggleModal()"></div>
     <div id="modal">
-        <h3>Cyber-Startup Mission</h3>
-        <p>Listen up! The div must look like a box.</p>
-        <ul style="font-size: 13px; line-height: 1.5;">
-            <li><strong>HTML:</strong> &lt;div class="hero-box"&gt;</li>
-            <li><strong>HTML:</strong> &lt;button&gt;Join Waitlist&lt;/button&gt;</li>
-            <li><strong>CSS:</strong> .hero-box background: #0f172a</li>
-            <li><strong>CSS:</strong> .hero-box height: 300px</li>
+        <h3 style="margin-top:0">Objective: Hero Section</h3>
+        <p>Your client needs a dark hero section for their startup. Match these specs:</p>
+        <ul style="font-size: 14px; line-height: 1.6;">
+            <li><strong>HTML:</strong> Create a <code>&lt;div class="hero-box"&gt;</code></li>
+            <li><strong>HTML:</strong> Add a <code>&lt;button&gt;Join Waitlist&lt;/button&gt;</code> inside it.</li>
+            <li><strong>CSS:</strong> Set <code>background</code> to <code>#0f172a</code></li>
+            <li><strong>CSS:</strong> Set <code>height</code> to <code>300px</code></li>
         </ul>
-        <button onclick="toggleModal()" style="width:100%; padding:10px; margin-top:10px;">Got it!</button>
+        <button onclick="toggleModal()" style="width:100%; padding:12px; background: #0f172a; color:white; margin-top:10px;">Accept Mission</button>
     </div>
 
     <script>
         function toggleModal() {
             const m = document.getElementById('modal');
             const o = document.getElementById('overlay');
-            const vis = m.style.display === 'block';
-            m.style.display = vis ? 'none' : 'block';
-            o.style.display = vis ? 'none' : 'block';
+            const isVisible = m.style.display === 'block';
+            m.style.display = isVisible ? 'none' : 'block';
+            o.style.display = isVisible ? 'none' : 'block';
         }
 
         function runCode() {
@@ -105,22 +113,43 @@
             const htmlRender = document.getElementById('html-render');
             const styleRender = document.getElementById('style-render');
 
-            // IPAD FIX: We need to clear the content first, then inject
-            htmlRender.innerHTML = ""; 
+            // 1. Inject content
             htmlRender.innerHTML = htmlValue;
-            
-            // IPAD CSS FIX: Forces Safari to re-apply styles
             styleRender.textContent = cssValue;
 
-            // Simple validation
-            if (htmlValue.includes('hero-box') && cssValue.includes('#0f172a') && cssValue.includes('300px')) {
-                document.getElementById('success-msg').style.display = 'block';
-                document.getElementById('next-btn').style.display = 'inline-block';
+            // 2. Real Validation: Check actual rendered properties
+            const hero = document.querySelector('.hero-box');
+            const successMsg = document.getElementById('success-msg');
+            const nextBtn = document.getElementById('next-btn');
+
+            if (hero) {
+                const style = window.getComputedStyle(hero);
+                
+                // Check for Background (Browsers convert hex to RGB)
+                const hasColor = style.backgroundColor === 'rgb(15, 23, 42)'; 
+                // Check for Height
+                const hasHeight = style.height === '300px';
+                // Check for Button
+                const hasButton = hero.querySelector('button') !== null;
+
+                if (hasColor && hasHeight && hasButton) {
+                    successMsg.style.display = 'block';
+                    nextBtn.style.display = 'inline-block';
+                } else {
+                    fail();
+                }
             } else {
-                document.getElementById('success-msg').style.display = 'none';
-                document.getElementById('next-btn').style.display = 'none';
+                fail();
+            }
+
+            function fail() {
+                successMsg.style.display = 'none';
+                nextBtn.style.display = 'none';
             }
         }
+        
+        // Open modal on start
+        window.onload = toggleModal;
     </script>
 </body>
 </html>
